@@ -12,6 +12,9 @@ sklearn = "*"
 matplotlib = "*"
 seaborn = "==0.12.0"
 tqdm = "*"
+bentoml = "*"
+pydantic = "*"
+scikit-learn = "==1.1.2"
 
 [dev-packages]
 

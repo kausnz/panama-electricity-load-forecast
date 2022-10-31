@@ -1,0 +1,11 @@
+service: "predict.py:load_forecast_svc"
+labels:
+  owner: Kaushalya Samarasekera
+  project: mlz
+include:
+  - "predict.py"
+python:
+  packages:
+    - xgboost
+    - sklearn
+    - pydantic
