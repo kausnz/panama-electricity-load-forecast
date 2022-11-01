@@ -1,0 +1,12 @@
+api_version: v1
+name: load-forecast-regressor
+operator:
+  name: google-cloud-run
+template: terraform
+spec:
+  project_id: load-forecast-regressor
+  region: us-east1
+  port: 3000
+  max_instances: 1
+  memory: 512M
+  cpu: 1

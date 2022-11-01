@@ -10,5 +10,12 @@ serve:
 build-bento:
 	bentoml build
 
-build-docker:
-	bentoml containerize load_forecast_regressor:latest
+docker-build:
+	bentoctl build -b load_forecast_regressor:latest -f deployment_config.yaml
+
+deploy:
+	terraform apply -var-file=bentoctl.tfvars -auto-approve
+
+destroy:
+	bentoctl destroy -f deployment_config.yaml
+
