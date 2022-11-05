@@ -1,3 +1,13 @@
+## Project Guidelines:
+
+1. [x] Think of a problem that's interesting for you and find a dataset for that
+2. [x] Describe this problem and explain how a model could be used
+3. [x] Prepare the data and doing EDA, analyze important features
+4. [x] Train multiple models, tune their performance and select the best model
+5. [x] Export the notebook into a script
+6. [x] Put your model into a web service and deploy it locally with Docker
+7. [x] Bonus points for deploying the service to the cloud
+
 ## Dataset
 This is a useful dataset to train and test Machine Learning forecasting algorithms and compare results with the official forecast from weekly pre-dispatch reports. 
 
@@ -25,4 +35,4 @@ For simplicity, the published datasets are already pre-processed by merging all 
 * data in the pre-dispatch reports are the features for the model. Their pre-dispatch load is a prediction that's not useful to out prediction. We can however compare the accuracy of our predictions with theirs later on.
 
 📗 Glossary
-* **Load** - the amount of electricity 'demanded' by the consumers for a specified time window. 
+* **Load** - the amount of electricity 'demanded' by the consumers for a specified time window. In this dataset the time window is 1 hour.

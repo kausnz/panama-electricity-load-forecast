@@ -4,7 +4,7 @@ from bentoml.io import JSON
 from pydantic import BaseModel
 
 
-class RequestPayload(BaseModel):
+class FeaturePayload(BaseModel):
     t2m_toc: float
     qv2m_toc: float
     tql_toc: float
@@ -34,8 +34,8 @@ dv = model_ref.custom_objects['dictVectorizer']
 load_forecast_svc = bentoml.Service("load_forecast_regressor", runners=[model_runner])
 
 
-@load_forecast_svc.api(input=JSON(pydantic_model=RequestPayload), output=JSON())
-async def forecast(payload: RequestPayload):
+@load_forecast_svc.api(input=JSON(pydantic_model=FeaturePayload), output=JSON())
+async def forecast(payload: FeaturePayload):
     application_data = payload.dict()
 
     # note that we are vector-ising but not transforming to a dictionary afterwards.
