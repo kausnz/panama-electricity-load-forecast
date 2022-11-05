@@ -2,30 +2,28 @@
 
 ## Problem Statement
 
-The national electricity grid operator<sup>1</sup> in Panama requires a machine learning model to forecast the hourly
+The national electricity grid operator<sup>1</sup> in Panama requires a Machine Learning (ML) model to forecast the hourly
 electricity demand<sup>2</sup> for a period of 7 days. This goes into a pre electricity dispatch<sup>3</sup> report released to the
 electricity industry.
 A dataset is available with hourly records. Its composition is as follows:
 
 1. Historical electricity load, available on daily post-dispatch reports, from the grid
    operator ([CND](https://www.cnd.com.pa/), Panama).
-2. Historical weekly forecasts available on weekly pre-dispatch reports, both from CND.
+2. Historical weekly forecasts available on weekly pre-dispatch reports, also from CND.
 3. Calendar information related to school periods, from Panama's Ministry of Education.
 4. Calendar information related to holidays, from "When on Earth?" website.
 5. Weather variables, such as temperature, relative humidity, precipitation, and wind speed, for three main cities in
    Panama, from Earthdata.
 
-Using this dataset, develop an ML model to forecast the electricity demand for 1-hour time window when a feature matrix
+Using this dataset, develop an ML model to forecast the electricity demand for a 1-hour time window when a feature matrix
 for the same time window is provided.
 
-<sup>1</sup> The operating body who ensures the supply-demand equilibrium in the national electricity grid.
+*<sup>1</sup> The operating body who ensures the supply-demand equilibrium in the national electricity grid.*
 
-<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the jupyter
-notebook.
+<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the jupyter notebook.
 
-<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet a demand. This is done by electricity
-generators. An instruction given by the grid operator to a generator, with specific instruction on how much to generate
-and when, is known as a dispatch instruction.
+<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet the demand. This is done by electricity
+generators. An instruction given by the grid operator to a Generator (a firm supplying electricity to the grid), with specific instructions on how much to generate and when, is known as a Dispatch Instruction.
 
 ### Dataset
 
@@ -39,7 +37,7 @@ The solution consists of the following components:
 
 * [`notebook.ipynb`](notebook.ipynb) - A jupyter notebook that consists of an EDA of the dataset, model training, tuning and selection.
 * [`predict.py`](predict.py) - A REST service api for the model so the clients can get predictions calculated for a given set of
-  features, over http. This service is hosted in Google Cloud Run and can be access by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast. Here's a sample request if you would like to test a forecast manually via the swagger ui.
+  features, over http. This service is hosted in Google Cloud Run and can be access by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast. Here's a sample request if you would like to test a forecast manually via the Swagger UI.
     ```json
     {
       "t2m_toc": 25.6113220214844,
