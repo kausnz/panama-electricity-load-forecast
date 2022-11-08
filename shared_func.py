@@ -1,6 +1,5 @@
 import pandas as pd
 import xgboost as xgb
-from sklearn.feature_selection import SelectKBest, f_regression
 
 
 def train_gb_model(dm_train,
@@ -38,7 +37,7 @@ def train_gb_model(dm_train,
                     num_boost_round=num_boost_round,
                     evals=watchlist,
                     evals_result=evals_result,
-                    verbose_eval=1)
+                    verbose_eval=False)
 
     columns = ['eta', 'iter', 'train_rmse', 'val_rmse']
     train_rmse_scores = list(evals_result['train'].values())[0] if watchlist is not None else []
