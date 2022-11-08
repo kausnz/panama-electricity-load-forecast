@@ -1,5 +1,6 @@
 import pandas as pd
 import xgboost as xgb
+from sklearn.feature_selection import SelectKBest, f_regression
 
 
 def train_gb_model(dm_train,
