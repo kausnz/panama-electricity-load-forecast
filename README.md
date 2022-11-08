@@ -2,30 +2,28 @@
 
 ## Problem Statement
 
-The national electricity grid operator<sup>1</sup> in Panama requires a machine learning model to forecast the hourly
+The national electricity grid operator<sup>1</sup> in Panama requires a Machine Learning (ML) model to forecast the hourly
 electricity demand<sup>2</sup> for a period of 7 days. This goes into a pre electricity dispatch<sup>3</sup> report released to the
 electricity industry.
 A dataset is available with hourly records. Its composition is as follows:
 
 1. Historical electricity load, available on daily post-dispatch reports, from the grid
    operator ([CND](https://www.cnd.com.pa/), Panama).
-2. Historical weekly forecasts available on weekly pre-dispatch reports, both from CND.
+2. Historical weekly forecasts available on weekly pre-dispatch reports, also from CND.
 3. Calendar information related to school periods, from Panama's Ministry of Education.
 4. Calendar information related to holidays, from "When on Earth?" website.
 5. Weather variables, such as temperature, relative humidity, precipitation, and wind speed, for three main cities in
    Panama, from Earthdata.
 
-Using this dataset, develop an ML model to forecast the electricity demand for 1-hour time window when a feature matrix
+Using this dataset, develop an ML model to forecast the electricity demand for a 1-hour time window when a feature vector
 for the same time window is provided.
 
-<sup>1</sup> The operating body who ensures the supply-demand equilibrium in the national electricity grid.
+*<sup>1</sup> The operating body who ensures the supply-demand equilibrium in the national electricity grid.*
 
-<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the jupyter
-notebook.
+<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the jupyter notebook.
 
-<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet a demand. This is done by electricity
-generators. An instruction given by the grid operator to a generator, with specific instruction on how much to generate
-and when, is known as a dispatch instruction.
+<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet the demand. This is done by electricity
+generators. An instruction given by the grid operator to a Generator (a firm supplying electricity to the grid), with specific instructions on how much to generate and when, is known as a Dispatch Instruction.
 
 ### Dataset
 
@@ -38,8 +36,8 @@ Aguilar Madrid, Ernesto (2021), “Short-term electricity load forecasting (Pana
 The solution consists of the following components:
 
 * [`notebook.ipynb`](notebook.ipynb) - A jupyter notebook that consists of an EDA of the dataset, model training, tuning and selection.
-* [`predict.py`](predict.py) - A REST service api for the model so the clients can get predictions calculated for a given set of
-  features, over http. This service is hosted in Google Cloud Run and can be access by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast. Here's a sample request if you would like to test a forecast manually via the swagger ui.
+* [`predict.py`](predict.py) - A REST service API for the model so the clients (e.g. the grid operators) can get predictions calculated for a given set of
+  features, over http. This service is hosted in Google Cloud Run (GCR) and can be accessed by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast. Here's a sample request (feature vector) to the service if you would like to manually test a forecast via the Swagger UI.
     ```json
     {
       "t2m_toc": 25.6113220214844,
@@ -63,34 +61,28 @@ The solution consists of the following components:
       "dt_hour": 20.0
     }
     ```
-* [`train.py`](train.py) - A script to train the best performing model and export as a bentoml model.
-* [`shared_func.py`](shared_func.py) - A shared module to have the xgboost training logic, so it can be called from both `notebook.ipynb`
-  and `train.py`.
-* [`dashboard/app.py`](dashboard/app.py) - https://lf-dashboard-mqpvakdd5a-uc.a.run.app is an experimental but working dashboard I've developed to plot the forecast and the actual demand on the same
+* [`train.py`](train.py) - A script to train the final model (best performing) and export as a BentoML package.
+* [`shared_func.py`](shared_func.py) - A shared module that contains a function to train the XGBoost model, so it can be called from `notebook.ipynb` and `train.py`.
+* [`dashboard/app.py`](dashboard/app.py) - https://lf-dashboard-mqpvakdd5a-uc.a.run.app is an experimental dashboard I've developed to visualise the forecast vs. actual demand on a
   graph.
-  This dashboard sends a request to the model hosted in GCR every 2 seconds and plot the *forecast* value along with the
-  corresponding *actual*. This helps to visualise how the forecast tracks compared to the actual demand.
+  This dashboard sends a request to the ML model hosted in GCR every 2 seconds and plots the *forecast* value along with the
+  corresponding *actual*. 
 
 Other files:
 
-* [`bentofile.yaml`](bentofile.yaml) - A bentoml descriptor to build, package and dockerize the application to a deployable unit.
-* [`deployment_config.yaml`](deployment_config.yaml) - A configuration descriptor for `bentoctl` to deploy the service (predict.py, encapsulated
-  in a bento package) to Google Cloud Run (GCR).
-* `main.tf` and `terraform.tfstate` - Generated by bentoctl for the infrastructure to provision in GCR.
-* [`NOTES.md`](NOTES.md) - Some notes for self about the dataset.
+* [`bentofile.yaml`](bentofile.yaml) - A Bentoml descriptor to build, package and dockerize the application to a deployable unit.
+* [`deployment_config.yaml`](deployment_config.yaml) - A configuration descriptor for `bentoctl` to deploy the service (which is defined in `predict.py` and encapsulated in a BentoML package) to GCR.
+* `main.tf` and `terraform.tfstate` - Generated by `bentoctl` for the infrastructure to provision in GCR.
+* [`NOTES.md`](NOTES.md) - My personal notes about the dataset.
 * [`Makefile`](Makefile) - A convenience script to organise frequently executed commands.
 
 ## System requirements to run locally
 
-This notebook was developed on macOS platform. Pipenv is used to isolate the python version and dependencies, and they
-can be found in the Pipfile and Pipfile.lock. You can initialise the python environment by
+This solution was developed on macOS platform. Pipenv is used to isolate the Python version and dependencies, and they
+can be found in the `Pipfile` and `Pipfile.lock`. You can initialise the Python environment by
 running `pipenv install --system --deploy`.
-
-## Makefile
-
-All the shell commands are collated into a Makefile for convenience. See the Makefile in this directory.
 
 ## Having trouble?
 
-If you run into any issues when viewing the notebook or running the project locally, please reach out to me via
+If you run into any issues when executing the solution, please reach out to me via
 MLZoomcamp Slack (user @Kaush S.).
