@@ -93,11 +93,45 @@ Other files:
 * [`NOTES.md`](NOTES.md) - My personal notes about the dataset.
 * [`Makefile`](Makefile) - A convenience script to organise frequently executed commands.
 
-## System requirements to run locally
+## How to run the solution locally
 
 This solution was developed on macOS platform. Pipenv is used to isolate the Python version and dependencies, and they
-can be found in the `Pipfile` and `Pipfile.lock`. You can initialise the Python environment by
-running `pipenv install --system --deploy`.
+can be found in the `Pipfile` and `Pipfile.lock`. The entire solution can be executed locally.
+
+1. To build the model
+    ```shell
+    bentoml build
+    ```
+2. To serve the model.
+    ```shell
+    bentoml serve predict.py:load_forecast_svc
+    ```
+   Once started, direct your browser to http://0.0.0.0:3000 to view the Swagger UI.
+3. Build the dashboard
+    ```shell
+    docker build -t lf-dashboard ./dashboard/.
+    ```
+4. Run the dashboard
+    ```shell
+    docker run -it --rm -p 8050:8050 lf-dashboard
+    ```
+   Once started, direct your browser to http://0.0.0.0:8050 to view the dashboard. Note that the dashboard is hardcoded
+   to connect to the model hosted in GCR. If you would like the dashboard to connect to the model you started locally,
+   please update serve url in `dashboard/app.py`.
+    ```python
+    url = 'http://0.0.0.0:3000/forecast'
+    ```
+
+**Running notebook on Colab or Kaggle?**
+
+1. Download notebook.ipynb and upload to the online jupyter platform of choice
+2. In the notebook, search for this import statement and comment it out: `from shared_func import train_gb_model`
+3. Copy the content from [`shared_func.py`](shared_func.py) and insert in a cell right after the cell where the import
+   statements are.
+4. Add the following statement as the first cell under the section _Exploratory Data Analysis (EDA)_.
+   ```!wget -P data -nc 'https://raw.githubusercontent.com/kausnz/panama-electricity-load-forecast/main/data/continuous_dataset.csv'```
+
+You should now be able to run the notebook successfully.
 
 ## Having trouble?
 
