@@ -2,8 +2,10 @@
 
 ## Problem Statement
 
-The national electricity grid operator<sup>1</sup> in Panama requires a Machine Learning (ML) model to forecast the hourly
-electricity demand<sup>2</sup> for a period of 7 days. This goes into a pre electricity dispatch<sup>3</sup> report released to the
+The national electricity grid operator<sup>1</sup> in Panama requires a Machine Learning (ML) model to forecast the
+hourly
+electricity demand<sup>2</sup> for a period of 7 days. This goes into a pre electricity dispatch<sup>3</sup> report
+released to the
 electricity industry.
 A dataset is available with hourly records. Its composition is as follows:
 
@@ -15,15 +17,20 @@ A dataset is available with hourly records. Its composition is as follows:
 5. Weather variables, such as temperature, relative humidity, precipitation, and wind speed, for three main cities in
    Panama, from Earthdata.
 
-Using this dataset, develop an ML model to forecast the electricity demand for a 1-hour time window when a feature vector
+Using this dataset, develop an ML model to forecast the electricity demand for a 1-hour time window when a feature
+vector
 for the same time window is provided.
 
 *<sup>1</sup> The operating body who ensures the supply-demand equilibrium in the national electricity grid.*
 
-<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the jupyter notebook.
+*<sup>2</sup> The amount of electricity 'demanded' by the consumers for a specific time window. In this dataset the time
+window is 1 hour. Also known as the *Load*. These two terms are use interchangeably throughout this document and the
+jupyter notebook.*
 
-<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet the demand. This is done by electricity
-generators. An instruction given by the grid operator to a Generator (a firm supplying electricity to the grid), with specific instructions on how much to generate and when, is known as a Dispatch Instruction.
+*<sup>3</sup> Dispatch is the action of supplying electricity to the grid to meet the demand. This is done by
+electricity
+generators. An instruction given by the grid operator to a Generator (a firm supplying electricity to the grid), with
+specific instructions on how much to generate and when, is known as a Dispatch Instruction.*
 
 ### Dataset
 
@@ -33,11 +40,18 @@ Aguilar Madrid, Ernesto (2021), “Short-term electricity load forecasting (Pana
 
 ## Solution
 
+<img src="assets/dashboard-snapshot.png" alt="A client to visualise load forecast using the live model" />
+
 The solution consists of the following components:
 
-* [`notebook.ipynb`](notebook.ipynb) - A jupyter notebook that consists of an EDA of the dataset, model training, tuning and selection.
-* [`predict.py`](predict.py) - A REST service API for the model so the clients (e.g. the grid operators) can get predictions calculated for a given set of
-  features, over http. This service is hosted in Google Cloud Run (GCR) and can be accessed by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast. Here's a sample request (feature vector) to the service if you would like to manually test a forecast via the Swagger UI.
+* [`notebook.ipynb`](notebook.ipynb) - A jupyter notebook that consists of an EDA of the dataset, model training, tuning
+  and selection.
+* [`predict.py`](predict.py) - A REST service API for the model so the clients (e.g. the grid operators) can get
+  predictions calculated for a given set of
+  features, over http. This service is hosted in Google Cloud Run (GCR) and can be accessed
+  by https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast
+  . Here's a sample request (feature vector) to the service if you would like to manually test a forecast via the
+  Swagger UI.
     ```json
     {
       "t2m_toc": 25.6113220214844,
@@ -62,16 +76,19 @@ The solution consists of the following components:
     }
     ```
 * [`train.py`](train.py) - A script to train the final model (best performing) and export as a BentoML package.
-* [`shared_func.py`](shared_func.py) - A shared module that contains a function to train the XGBoost model, so it can be called from `notebook.ipynb` and `train.py`.
-* [`dashboard/app.py`](dashboard/app.py) - https://lf-dashboard-mqpvakdd5a-uc.a.run.app is an experimental dashboard I've developed to visualise the forecast vs. actual demand on a
-  graph.
-  This dashboard sends a request to the ML model hosted in GCR every 2 seconds and plots the *forecast* value along with the
-  corresponding *actual*. 
+* [`shared_func.py`](shared_func.py) - A shared module that contains a function to train the XGBoost model, so it can be
+  called from `notebook.ipynb` and `train.py`.
+* [`dashboard/app.py`](dashboard/app.py) - https://lf-dashboard-mqpvakdd5a-uc.a.run.app is an experimental dashboard
+  I've developed to visualise the forecast vs. actual demand on a graph. This dashboard sends a request to the ML model
+  hosted in GCR every 2 seconds and plots the *forecast* value along with
+  the corresponding *actual*.
 
 Other files:
 
-* [`bentofile.yaml`](bentofile.yaml) - A Bentoml descriptor to build, package and dockerize the application to a deployable unit.
-* [`deployment_config.yaml`](deployment_config.yaml) - A configuration descriptor for `bentoctl` to deploy the service (which is defined in `predict.py` and encapsulated in a BentoML package) to GCR.
+* [`bentofile.yaml`](bentofile.yaml) - A Bentoml descriptor to build, package and dockerize the application to a
+  deployable unit.
+* [`deployment_config.yaml`](deployment_config.yaml) - A configuration descriptor for `bentoctl` to deploy the service (
+  which is defined in `predict.py` and encapsulated in a BentoML package) to GCR.
 * `main.tf` and `terraform.tfstate` - Generated by `bentoctl` for the infrastructure to provision in GCR.
 * [`NOTES.md`](NOTES.md) - My personal notes about the dataset.
 * [`Makefile`](Makefile) - A convenience script to organise frequently executed commands.

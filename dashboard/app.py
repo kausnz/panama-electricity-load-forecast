@@ -15,6 +15,9 @@ app.layout = html.Div([
     # This is an interval counter ( a scheduler). Configured to increment every 2 seconds. This triggers the call to
     # the model service to get the next forecast and refresh the plot.
     dcc.Interval(id='interval_counter', interval=2 * 1000, n_intervals=0),
+    html.P(['This is a simulation of the hourly load (demand) forecast using the ', html.A('XGBoost regressor model I\'ve hosted in Google Cloud Run', href='https://load-forecast-regressor-cloud-run-service-mqpvakdd5a-ue.a.run.app/#/Service%20APIs/load_forecast_regressor__forecast'), '. This dashboard iterates through a test dataset of features, sending each record to the model to get the forecast calculated. Each iteration take place every 2 seconds and each record represents 1 hour. In other words, every 2 seconds you will see the forecast for a 1-hour window.']),
+    html.P(
+        'Note that I\'m plotting both forecast and actual at the same time. But in a real load forecasting application the actual will only be plotted once the forecasted window is expired as the actual will not be known til then.'),
 
     dcc.Graph(id='graph_panel'),
 
